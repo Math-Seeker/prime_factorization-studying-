@@ -5,7 +5,8 @@ def my_gcd(a : int, b : int):  # my_gcd(a, 0) = a; my_gcd(0, b) = b
         b = c
     return a
 
-def modular_fast_power(a : int, k : int, n : int):  # return (a ^ k) mod n
+def modular_fast_power(a : int, k : int, n : int):
+    """return (a ^ k) mod n"""
     res = 1
     while k:
         nonzero = k % 2
@@ -55,3 +56,33 @@ def primality_test(n : int) -> bool:  # 素数判定、Miller–Rabin法
                     return False
 
         return True
+    
+def mod_inverse(a : int, n : int) -> tuple:
+    """return (True, a^(-1) mod n) or (False, gcd(a, n))"""
+    P = []
+    N = n
+    while a != 0:
+        P.append(n // a)
+        r = n % a
+        n = a
+        a = r
+    if n == 1:
+        P.pop()
+        x, y = 1, -P.pop()  # nx + ay = 1の解yを求める
+        while P:
+            p = P.pop()
+            x, y = y, x - p * y
+        return (True, y % N)
+    else:
+        return (False, n)
+
+# class my_ec_mod_n:
+#     """y^2 = x^3 + bx + c (mod n)"""
+#     def __init__(self, b : int, c : int, n : int):
+#         self.b = b
+#         self.c = c
+#         self.n = n
+#     def double(P : tuple): # return tuple or None
+#         x, y = P[0], P[1]
+#         if x == float('inf'):
+#             return [float('inf'), float('inf')]
