@@ -1,4 +1,3 @@
-from tinyec.ec import SubGroup, Curve, Point
 from my_library import primality_test, primality_test_easy, modular_fast_power, my_gcd
 from random import randint
 
