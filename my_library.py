@@ -76,13 +76,45 @@ def mod_inverse(a : int, n : int) -> tuple:
     else:
         return (False, n)
 
-# class my_ec_mod_n:
-#     """y^2 = x^3 + bx + c (mod n)"""
-#     def __init__(self, b : int, c : int, n : int):
-#         self.b = b
-#         self.c = c
-#         self.n = n
-#     def double(P : tuple): # return tuple or None
-#         x, y = P[0], P[1]
-#         if x == float('inf'):
-#             return [float('inf'), float('inf')]
+class my_ec_mod_n:
+    """y^2 = x^3 + bx + c (mod n)"""
+    def __init__(self, b : int, c : int, n : int):
+        self.b = b
+        self.c = c
+        self.n = n
+        self.invertible_2, self.inver_2 = mod_inverse(2, n)
+    def add(self, P : tuple, Q : tuple) -> tuple:
+        """return (x3, y3) or (None, nの約数), 無限遠点：(None, None)"""
+        # gcd(y, n) = n or gcd(x2 - x1, n) = nの時、無限遠点を返す
+        x1, y1 = P[0] % self.n, P[1] % self.n
+        x2, y2 = Q[0] % self.n, Q[1] % self.n
+        if y1 is None:
+            return (x2, y2)
+        elif y2 is None:
+            return (x1, y1)
+        
+        if x1 == x2 and y1 == y2:
+            if not self.invertible_2:
+                return (None, 2)
+            if y1 == 0:
+                return (None, None)
+            inver, inver_y1 = mod_inverse(y1, self.n)
+            if not inver:
+                return (None, inver_y1)
+            k = (3 * x1 * x1 + self.b) % self.n * self.inver_2 * inver_y1 % self.n
+            x3 = (k * k - 2 * x1) % self.n
+            y3 = (k * (x1 - x3) - y1) % self.n
+        else:
+            x1, y1 = P[0], P[1]
+            x2, y2 = Q[0], Q[1]
+            x2_minus_x1 = (x2 - x1) % self.n
+            if x2_minus_x1 == 0:
+                return (None, None)
+            inver, inver_x2_minus_x1 = mod_inverse(x2 - x1, self.n)
+            if not inver:
+                return (None, inver_x2_minus_x1)
+            k = (y2 - y1) * inver_x2_minus_x1 % self.n
+            x3 = (k * k - x1 - x2) % self.n
+            y3 = (k * (x1 - x3) - y1) % self.n
+
+        return (x3, y3)
