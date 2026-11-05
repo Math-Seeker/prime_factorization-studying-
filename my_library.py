@@ -105,8 +105,6 @@ class my_ec_mod_n:
             x3 = (k * k - 2 * x1) % self.n
             y3 = (k * (x1 - x3) - y1) % self.n
         else:
-            x1, y1 = P[0], P[1]
-            x2, y2 = Q[0], Q[1]
             x2_minus_x1 = (x2 - x1) % self.n
             if x2_minus_x1 == 0:
                 return (None, None)
