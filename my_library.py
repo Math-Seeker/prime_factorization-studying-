@@ -59,6 +59,10 @@ def primality_test(n : int) -> bool:  # 素数判定、Miller–Rabin法
     
 def mod_inverse(a : int, n : int) -> tuple:
     """return (True, a^(-1) mod n) or (False, gcd(a, n))"""
+    if n == 1:
+        return (True, 0)
+    if a == 1:
+        return (True, 1)
     P = []
     N = n
     while a != 0:
@@ -86,13 +90,14 @@ class my_ec_mod_n:
     def add(self, P : tuple, Q : tuple) -> tuple:
         """return (x3, y3) or (None, nの約数), 無限遠点：(None, None)"""
         # gcd(y, n) = n or gcd(x2 - x1, n) = nの時、無限遠点を返す
-        x1, y1 = P[0] % self.n, P[1] % self.n
-        x2, y2 = Q[0] % self.n, Q[1] % self.n
+        x1, y1 = P[0], P[1]
+        x2, y2 = Q[0], Q[1]
         if y1 is None:
             return (x2, y2)
         elif y2 is None:
             return (x1, y1)
-        
+
+        x1 %= self.n; y1 %= self.n; x2 %= self.n; y2 %= self.n
         if x1 == x2 and y1 == y2:
             if not self.invertible_2:
                 return (None, 2)
@@ -108,7 +113,7 @@ class my_ec_mod_n:
             x2_minus_x1 = (x2 - x1) % self.n
             if x2_minus_x1 == 0:
                 return (None, None)
-            inver, inver_x2_minus_x1 = mod_inverse(x2 - x1, self.n)
+            inver, inver_x2_minus_x1 = mod_inverse(x2_minus_x1, self.n)
             if not inver:
                 return (None, inver_x2_minus_x1)
             k = (y2 - y1) * inver_x2_minus_x1 % self.n
