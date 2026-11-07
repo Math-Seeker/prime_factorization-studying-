@@ -16,7 +16,7 @@ def ec_method(n: int) -> list:
     while True:
         P = (randint(1, n - 1), randint(1, n - 1))
         b = randint(1, n - 1)
-        c = (P[1] * P[1] - (P[0] * P[0] - b) * P[0]) % n  # y^2 = x^3 + bx + c, P(2, 1)を固定
+        c = (P[1] * P[1] - (P[0] * P[0] - b) * P[0]) % n  # y^2 = x^3 + bx + c
         gcd = my_gcd(4 * b * b * b + 27 * c * c, n)
         if gcd == n:
             continue
@@ -25,11 +25,9 @@ def ec_method(n: int) -> list:
         
         ec = my_ec_mod_n(b, c, n)
         # ここからkPの計算、繰り返し2乗法
-        P_list = []  # 2^rPのlist, r = index
         kP = (None, None)
         k1 = k
         while k1 != 0:
-            P_list.append(P)
             if k1 % 2 == 1:
                 kP = ec.add(kP, P)
                 if kP[0] is None:
